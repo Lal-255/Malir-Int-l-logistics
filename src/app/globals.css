@@ -1,26 +1,108 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Manrope Variable", "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+
+  --color-navy-950: #061224;
+  --color-navy-900: #0a1c36;
+  --color-navy-800: #0f2a4d;
+  --color-navy-700: #163a64;
+  --color-ocean-600: #1f4f82;
+  --color-ocean-500: #2d659e;
+  --color-gold-600: #a97a2c;
+  --color-gold-500: #c8963e;
+  --color-gold-400: #d8ad5f;
+  --color-gold-100: #f6ecd9;
+  --color-mist: #f3f5f8;
+  --color-line: #e1e6ed;
+  --color-ink: #0d1a2b;
+  --color-slate: #4a5b71;
+
+  --shadow-card: 0 1px 2px rgb(10 28 54 / 0.04), 0 8px 24px -8px rgb(10 28 54 / 0.10);
+  --shadow-lift: 0 2px 4px rgb(10 28 54 / 0.06), 0 20px 40px -12px rgb(10 28 54 / 0.22);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@layer base {
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body { @apply bg-white text-ink font-sans antialiased; font-feature-settings: "cv11", "ss01"; }
+  h1, h2, h3, h4 { @apply font-display text-navy-900; letter-spacing: -0.015em; }
+  ::selection { background: var(--color-gold-100); color: var(--color-navy-900); }
+  :focus-visible { outline: 2px solid var(--color-gold-500); outline-offset: 2px; }
+  [id] { scroll-margin-top: 6rem; }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@layer components {
+  .container-x { @apply mx-auto w-full max-w-7xl px-5 sm:px-8; }
+  .eyebrow { @apply inline-flex items-center gap-2 text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-gold-600; }
+  .eyebrow::before { content: ""; @apply inline-block h-px w-7 bg-current; }
+  .eyebrow-light { @apply text-gold-400; }
+  .prose-copy p { @apply text-slate leading-relaxed; }
+  .prose-copy p + p { @apply mt-4; }
+
+  .field-label { @apply mb-1.5 block text-sm font-medium text-navy-900; }
+  .field { @apply block w-full rounded-md border border-line bg-white px-3.5 py-2.5 text-[0.95rem] text-ink shadow-sm transition placeholder:text-slate/60 focus:border-ocean-500 focus:outline-none focus:ring-2 focus:ring-ocean-500/20; }
+  .field[aria-invalid="true"] { @apply border-red-500 focus:ring-red-500/20; }
+  .field-error { @apply mt-1.5 text-xs font-medium text-red-600; }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Reveal-on-scroll (progressive enhancement: content is visible without JS) */
+.js [data-reveal] { opacity: 0; transform: translateY(36px); transition: opacity .9s ease, transform .9s cubic-bezier(.2,.7,.2,1); }
+.js [data-reveal].is-visible { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .js [data-reveal] { opacity: 1; transform: none; transition: none; } }
+
+@keyframes dash { to { stroke-dashoffset: 0; } }
+.route-draw { stroke-dasharray: 2400; stroke-dashoffset: 2400; animation: dash 3.2s cubic-bezier(.4,.1,.2,1) .3s forwards; }
+@keyframes pulse-ring { 0% { transform: scale(.6); opacity: .9; } 100% { transform: scale(2.4); opacity: 0; } }
+.pulse-ring { transform-box: fill-box; transform-origin: center; animation: pulse-ring 2.4s ease-out infinite; }
+@media (prefers-reduced-motion: reduce) { .route-draw { animation: none; stroke-dashoffset: 0; } .pulse-ring { animation: none; opacity: 0; } }
+
+/* Route map motion */
+@keyframes lane-flow { to { stroke-dashoffset: -190; } }
+.lane-flow { animation: lane-flow 6s linear infinite; opacity: .85; }
+@media (prefers-reduced-motion: reduce) { .lane-flow { animation: none; } .ship-motion { display: none; } }
+
+/* ── Bold & modern motion ─────────────────────────────────────────────── */
+@keyframes kenburns { from { transform: scale(1.04) translate3d(0,0,0); } to { transform: scale(1.16) translate3d(-1.5%,-1%,0); } }
+.kenburns { animation: kenburns 18s ease-out infinite alternate; will-change: transform; }
+
+/* 3-slide crossfade slideshow (pure CSS) */
+@keyframes slide-fade { 0% { opacity: 0; } 6% { opacity: 1; } 33% { opacity: 1; } 39% { opacity: 0; } 100% { opacity: 0; } }
+.slide { opacity: 0; animation: slide-fade 21s linear infinite; }
+.slide:nth-child(1) { animation-delay: -1s; }
+.slide:nth-child(2) { animation-delay: 6s; }
+.slide:nth-child(3) { animation-delay: 13s; }
+
+@keyframes rise { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: none; } }
+.rise { opacity: 0; animation: rise 1s cubic-bezier(.2,.7,.2,1) forwards; }
+.rise-1 { animation-delay: .15s; } .rise-2 { animation-delay: .35s; } .rise-3 { animation-delay: .55s; } .rise-4 { animation-delay: .75s; } .rise-5 { animation-delay: .95s; }
+
+@keyframes marquee { to { transform: translateX(-50%); } }
+.marquee-track { animation: marquee 40s linear infinite; }
+.marquee:hover .marquee-track { animation-play-state: paused; }
+
+@keyframes scroll-cue { 0% { transform: translateY(0); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateY(14px); opacity: 0; } }
+.scroll-cue { animation: scroll-cue 1.8s ease-in-out infinite; }
+
+.text-outline { -webkit-text-stroke: 2px var(--color-gold-400); color: transparent; }
+
+@media (prefers-reduced-motion: reduce) {
+  .kenburns, .marquee-track, .scroll-cue { animation: none; }
+  .slide { animation: none; opacity: 0; } .slide:first-child { opacity: 1; }
+  .rise { animation: none; opacity: 1; }
 }
+
+/* ── Languages ───────────────────────────────────────────────────────── */
+html[dir="rtl"] {
+  --font-sans: "Vazirmatn Variable", Tahoma, "Segoe UI", sans-serif;
+  --font-display: "Vazirmatn Variable", Tahoma, "Segoe UI", sans-serif;
+}
+/* Arabic script must never be letter-spaced (it breaks letter joining) */
+html[dir="rtl"] * { letter-spacing: 0 !important; }
+html[dir="rtl"] h1, html[dir="rtl"] h2, html[dir="rtl"] h3 { line-height: 1.35 !important; }
+html[lang^="zh"] {
+  --font-sans: "Inter Variable", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --font-display: "Manrope Variable", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+}
+html[lang^="zh"] h1, html[lang^="zh"] h2 { line-height: 1.2 !important; }
