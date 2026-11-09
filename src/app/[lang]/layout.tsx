@@ -8,6 +8,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Reveal } from "@/components/Reveal";
 import { WhatsAppFloat } from "@/components/WhatsAppFloat";
+import { Analytics } from "@vercel/analytics/next";
 import { JsonLd } from "@/components/JsonLd";
 import { organizationLd } from "@/lib/seo";
 import { locales, localeInfo } from "@/i18n/config";
@@ -42,6 +43,7 @@ export default async function RootLayout({ children, params }: { children: React
         <main id="main">{children}</main>
         <Footer lang={lang} t={t} />
         <WhatsAppFloat lang={lang} t={t.wa} quoteLabel={t.nav.quoteLong} contactLabel={t.wa.contact} />
+        <Analytics />
         <Reveal />
         <JsonLd data={organizationLd(t.meta.siteDescription)} />
       </body>
